@@ -1,15 +1,47 @@
 import java.util.List;
 import javax.swing.JOptionPane;
-public final class Aluno extends Pessoa {
+public final class Aluno extends Pessoa implements Autenticavel {
+	
+	public Aluno(String matricula, String senha) {
+		this.matricula = matricula;
+		this.senha = senha;
+	}
+	public Aluno() {};
+	private String senha;
+	public String getSenha() {
+		return senha;
+	}
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
 	private double media;
 	private int faltas;
-	public static enum Escolaridade{FUNDAMENTAL,MEDIO,SUPERIOR, NAO_INFORMADA};
+	private String matricula;
+	public static enum Escolaridade{FUNDAMENTAL,MEDIO,SUPERIOR, OUTRO};
 	public static enum Situacao{APROVADO,REPROVADO,RECUPERACAO,OUTRO};
 	private Escolaridade escolaridade;
 	private Situacao situacao;
 	private boolean trabalhaNoite;
-	private Pais pai = new Pais();
-	private Pais mae = new Pais();
+	private Pais pai ;
+	private Pais mae ;
+	
+	public boolean autentica(String usuario, String senha) {
+		// TODO Auto-generated method stub
+		boolean usuarioCorreto = false;	
+		boolean senhaCorreta = false;	
+		if(this.matricula.equals(usuario)){
+			usuarioCorreto = true;
+			if(this.senha.equals(senha)) {
+				senhaCorreta=true;
+				JOptionPane.showMessageDialog(null, "ALUNO NAO TEM PERMISSAO PARA MATRICULAR", "usuarioLogado", JOptionPane.PLAIN_MESSAGE);
+			}
+		}else {
+			System.out.println("usuario incorreto");
+		}
+		
+		return(usuarioCorreto &&senhaCorreta );
+	}
+	
 	Pais getMae() {
 		return mae;
 	}
@@ -76,5 +108,11 @@ public final class Aluno extends Pessoa {
 	}
 	public void imprimiCartaoAniversario() {
 		JOptionPane.showMessageDialog(null, "Feliz Aniversario "+ this.getNome(),"Cartao de Aniversario",JOptionPane.INFORMATION_MESSAGE);
+	}
+	public String getMatricula() {
+		return matricula;
+	}
+	public void setMatricula(String matricula) {
+		this.matricula = matricula;
 	}
 }

@@ -1,13 +1,15 @@
+import javax.swing.JOptionPane;
 
 public class Aplicacao {
 	  
 	public static void main(String[] args) {
+		
 		Escola escola1 = new Escola ();
-		escola1.login();
-		escola1.matricularAlunos();
-		escola1.relatorio();
-		Porteiro port1 = new Porteiro();
-		Funcionario func1 = ((Funcionario)port1);
-		func1.reajustarSalario(10.0);
+		escola1.inicializarListas();
+		if(escola1.verificarLogin()) {
+			escola1.matricularAlunos();
+			escola1.relatorio();
+		}else
+			JOptionPane.showMessageDialog(null, "usuário sem acesso ao sistema");
 	}
 }

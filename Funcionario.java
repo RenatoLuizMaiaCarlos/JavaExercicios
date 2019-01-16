@@ -7,25 +7,27 @@ public  abstract class Funcionario extends Pessoa {
 	Double salario;
 	String email;
 	int pid;
-	int getPid() {
-		return pid;
+	
+	public Double getSalario() {
+		return salario;
+	}
+	public void setSalario(Double salario) {
+		this.salario = salario;
+	}
+	
+	public int getPid() {
+		return this.pid;
 	}
 	void setPid(int pid) {
 		this.pid = pid;
 	}
-	String getEmail() {
+	public String getEmail() {
 		return email;
 	}
-	void setEmail(String email) {
+	public void setEmail(String email) {
 		this.email = email;
 	}
-	Map<String,String> mapLoginsFuncionario = new HashMap<>();	
-	Funcionario() {
-		mapLoginsFuncionario.put("PROFESSOR", "25413");
-		mapLoginsFuncionario.put("DIRETOR", "felicidade");
-		mapLoginsFuncionario.put("SECRETARIA", "amor1000");
-		mapLoginsFuncionario.put("COORDENADOR", "2018");
-	}
+	
 	public void reajustarSalario(Double percentagem) {
 		this.salario = this.salario*(1+percentagem);
 		System.out.println("em funcionario");

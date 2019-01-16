@@ -3,6 +3,14 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
 public class Escola {
+	
+	private Diretor diretor;
+	public Diretor getDiretor() {
+		return diretor;
+	}
+	public void setDiretor(Diretor diretor) {
+		this.diretor = diretor;
+	}
 	private List<Aluno> listAlunos = new ArrayList<Aluno>();
 	List<Aluno> getListAlunos() {
 		return listAlunos;
@@ -10,36 +18,90 @@ public class Escola {
 	void setListAlunos(List<Aluno> listAlunos) {
 		this.listAlunos = listAlunos;
 	}
-	public boolean login() {
-		boolean statusLogin = false;
-		String usuario = null;	
-		usuario = JOptionPane.showInputDialog("Informe usuario").toUpperCase();
-		switch(usuario) {
-		case "PROFESSOR":
-			Professor professor1 = new Professor();
-			statusLogin = loginFuncionario(professor1,usuario);
-			break;
-		case "DIRETOR":
-			Diretor diretor1 = new Diretor();
-			statusLogin = loginFuncionario(diretor1,usuario);
-			break;
-		case "SECRETARIA":
-			Secretario secretario1 = new Secretario();
-			statusLogin = loginFuncionario(secretario1,usuario);
-			break;
-		}
-		
-		return statusLogin;
+	
+	private List<Professor> listProfessor = new ArrayList<Professor>();
+	public List<Professor> getListProfessor() {
+		return listProfessor;
 	}
+	public void setListProfessor(List<Professor> listProfessor) {
+		this.listProfessor = listProfessor;
+	}
+	private List<Secretario> listSecretario = new ArrayList<Secretario>();
+	public List<Secretario> getListSecretario() {
+		return listSecretario;
+	}
+	public void setListSecretario(List<Secretario> listSecretario) {
+		this.listSecretario = listSecretario;
+	}
+	public void inicializarListas() {
+		for(int i=0;i<3;i++) {
+			Aluno aluno = new Aluno();
+			aluno.setNome("aluno"+(i+1));
+			aluno.setIdade(i+1);
+			aluno.setMatricula("MAT"+(i+1));
+			aluno.setSenha(aluno.getNome()+(i+1));
+			listAlunos.add(aluno);
+			
+			Professor professor = new Professor();
+			professor.setNome("professor"+(i+1));
+			professor.setIdade(i+1);
+			professor.setEmail(professor.getNome()+(i+1)+"@accenture.com.br");
+			professor.setSenha(professor.getNome()+(i+1));
+			listProfessor.add(professor);
+			
+			Secretario secretario = new Secretario();
+			secretario.setNome("secretario"+(i+1));
+			secretario.setIdade(i+1);
+			secretario.setPid(i+1);
+			secretario.setSenha(secretario.getNome()+(i+1));
+			listSecretario.add(secretario);
+		}
+	}
+	public boolean verificarLogin() {
+		String usuario = null;	
+		String senha = null;
+		usuario = JOptionPane.showInputDialog("Informe usuario");
+		senha = JOptionPane.showInputDialog("Informe senha");
+		for(Aluno itemAluno:listAlunos){	
+			if(itemAluno.getMatricula().equals(usuario))return itemAluno.autentica(usuario, senha);	
+		}
+		for(Professor itemProfessor:listProfessor){	
+			if(itemProfessor.getEmail().equals(usuario))return itemProfessor.autentica(usuario, senha);	
+		}
+		for(Secretario itemSecretario:listSecretario){	
+			if(Integer.toString(itemSecretario.getPid()).equals(usuario))return itemSecretario.autentica(usuario, senha);	
+		}
+		return false;
+	}
+	
 	public void matricularAlunos() {
-		
 		boolean novoCadastro = false;
 		do {
 			String nome = JOptionPane.showInputDialog(null,"Nome do aluno","CADASTRO",JOptionPane.INFORMATION_MESSAGE);
 			Aluno novoAluno = new Aluno(nome);
-			cadastrarNovoALuno(novoAluno);
-			//calcularMedia(novoAluno);
-			//novoAluno.calcularMedia(novoAluno);
+			int idade = Integer.parseInt(JOptionPane.showInputDialog(null,"idade de " + novoAluno.getNome(),"IDADE",JOptionPane.INFORMATION_MESSAGE));
+			novoAluno.setIdade(idade);
+			String escolaridade = JOptionPane.showInputDialog(null,"escolaridade :1 - Fundamental, 2 - medio, 3 - superior","Grau de Instrução",JOptionPane.INFORMATION_MESSAGE);
+			switch (escolaridade) {
+			case "1":
+				novoAluno.setEscolaridade(Aluno.Escolaridade.FUNDAMENTAL);
+				break;
+			case "2":
+				novoAluno.setEscolaridade(Aluno.Escolaridade.MEDIO);
+				break;
+			case "3":
+				novoAluno.setEscolaridade(Aluno.Escolaridade.SUPERIOR);
+				break;
+			default:
+				novoAluno.setEscolaridade(Aluno.Escolaridade.OUTRO);
+				break;
+			}
+			String trabalhaNoiteAux = null;
+			String faltasAux = null;
+			trabalhaNoiteAux = JOptionPane.showInputDialog(null,novoAluno.getNome()+" Trabalha a noite? Digite sim ou nao","Trabalho",JOptionPane.INFORMATION_MESSAGE);
+			novoAluno.setTrabalhaNoite(((trabalhaNoiteAux.equals("sim")) ? true:false));
+			faltasAux = JOptionPane.showInputDialog(null,"Informe quantidade de faltas de "+novoAluno.getNome(),"Ausências",JOptionPane.INFORMATION_MESSAGE);
+			novoAluno.setFaltas(Integer.parseInt(faltasAux)); 
 			int qtdNotas = Integer.parseInt(JOptionPane.showInputDialog(null,"Informe quantidade de notas de "+novoAluno.getNome()+" para cadastro","Cadastro de notas",JOptionPane.INFORMATION_MESSAGE));
 			List<Double> notas = new ArrayList<Double>();
 			String auxNotas = null;
@@ -55,51 +117,6 @@ public class Escola {
 			listAlunos.add(novoAluno);
 		}while(novoCadastro);
 	}
-	private void cadastrarNovoALuno(Aluno novoAluno) {
-		// TODO Auto-generated method stub
-		
-		//novoAluno.setNome(nome);
-		int idade = Integer.parseInt(JOptionPane.showInputDialog(null,"idade de " + novoAluno.getNome(),"IDADE",JOptionPane.INFORMATION_MESSAGE));
-		novoAluno.setIdade(idade);
-		String escolaridade = JOptionPane.showInputDialog(null,"escolaridade :1 - Fundamental, 2 - medio, 3 - superior","Grau de Instrução",JOptionPane.INFORMATION_MESSAGE);
-		switch (escolaridade) {
-		case "1":
-			novoAluno.setEscolaridade(Aluno.Escolaridade.FUNDAMENTAL);
-			break;
-		case "2":
-			novoAluno.setEscolaridade(Aluno.Escolaridade.MEDIO);
-			break;
-		case "3":
-			novoAluno.setEscolaridade(Aluno.Escolaridade.SUPERIOR);
-			break;
-		default:
-			novoAluno.setEscolaridade(Aluno.Escolaridade.NAO_INFORMADA);
-			break;
-		}
-		String trabalhaNoiteAux = null;
-		String faltasAux = null;
-		trabalhaNoiteAux = JOptionPane.showInputDialog(null,novoAluno.getNome()+" Trabalha a noite? Digite sim ou nao","Trabalho",JOptionPane.INFORMATION_MESSAGE);
-		novoAluno.setTrabalhaNoite(((trabalhaNoiteAux.equals("sim")) ? true:false));
-		faltasAux = JOptionPane.showInputDialog(null,"Informe quantidade de faltas de "+novoAluno.getNome(),"Ausências",JOptionPane.INFORMATION_MESSAGE);
-		novoAluno.setFaltas(Integer.parseInt(faltasAux)); 
-	}
-	boolean loginFuncionario(Funcionario funcionario,String usuario) {
-		String senha = null;
-		senha = JOptionPane.showInputDialog("Informe senha");
-		boolean usuarioEncontrado=false;
-		boolean senhaCorreta=false;
-		for(Map.Entry<String,String> acesso : funcionario.mapLoginsFuncionario.entrySet()){
-			if(acesso.getKey().equals(usuario)) {
-				usuarioEncontrado = true;
-				if(acesso.getValue().equals(senha)) {
-					senhaCorreta = true;
-				}else{
-					System.out.println("senha invalida");
-					 }
-			}
-		}
-		return (usuarioEncontrado && senhaCorreta);
-	}
 	private void calcularSituacao(Aluno novoAluno) {
 		// TODO Auto-generated method stub
 		if( novoAluno.getMedia() >= 7 && (novoAluno.getFaltas() < 3 || novoAluno.getTrabalhaNoite()) ) {
@@ -112,19 +129,6 @@ public class Escola {
 			novoAluno.setSituacao(Aluno.Situacao.REPROVADO);
 		}
 	}
-	/*private void calcularMedia(Aluno novoAluno) {
-		// TODO Auto-generated method stub
-		double somatorioNotas = 0;
-		int qtdNotas = Integer.parseInt(JOptionPane.showInputDialog(null,"Informe quantidade de notas de "+novoAluno.getNome()+" para cadastro","Cadastro de notas",JOptionPane.INFORMATION_MESSAGE));
-		double [] notas = new double[qtdNotas];
-		String [] notasAux = new String[qtdNotas];
-		for(int i=0;i<qtdNotas;i++) {
-			notasAux[i] = JOptionPane.showInputDialog("Digite "+(i+1)+"º"+ " nota de "+novoAluno.getNome());
-			notas[i] = Double.parseDouble(notasAux[i]);
-			somatorioNotas = somatorioNotas + notas[i];
-		}	
-		novoAluno.setMedia(somatorioNotas/qtdNotas);
-	}*/
 	public void relatorio() {
 		for(Aluno dadosAlunos: this.listAlunos){	
 			String relatorio = "Nome: "+dadosAlunos.getNome(); 
